@@ -6,7 +6,9 @@ public class WindController : MonoBehaviour {
 
     //enum WindDirection { Left, Right };
 
-    public float windSpeed;
+	[Range(1, 8)]
+	public float windSpeed;
+    public float windDuration;
 
     Rigidbody rb;
     bool windForce = false;
@@ -19,28 +21,34 @@ public class WindController : MonoBehaviour {
 
     private void Update()
     {
+        print(windForce); 
+
         if (Input.GetKeyUp(KeyCode.P))
         {
             windForce = !windForce;
             direction = Random.Range(0, 2);
         }
 
-        StartWindForce();
-	}
-
-    private void StartWindForce()
-    {
         if (windForce)
         {
-            if (direction == 0)
-            {
-                rb.AddForce(windSpeed, 0, 0, ForceMode.Force);
-            }
-            else
-            {
-                rb.AddForce(-windSpeed, 0, 0, ForceMode.Force);
-            }
-
+            StartCoroutine(StartWindForce());
         }
+	}
+
+    IEnumerator StartWindForce()
+    {
+		if (direction == 0)
+		{
+			//print("Left");
+			rb.AddForce(windSpeed, 0, 0, ForceMode.Force);
+		}
+		else
+		{
+			//print("Right");
+			rb.AddForce(-windSpeed, 0, 0, ForceMode.Force);
+		}
+
+        yield return new WaitForSeconds(windDuration);
+        windForce = false;
     }
 }
